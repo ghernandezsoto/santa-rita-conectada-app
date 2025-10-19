@@ -15,8 +15,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
 
-    // Apuntamos a la dirección IP pública servidor en DigitalOcean.
-    private const val BASE_URL = "http://165.232.144.157/"
+    // Apuntamos a la URL del dominio en producción con HTTPS.
+    private const val BASE_URL = "https://santaritaconectada.cl/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
