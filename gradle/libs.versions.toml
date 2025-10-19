@@ -12,8 +12,11 @@ composeCompiler = "1.5.8"
 retrofit = "2.9.0"
 okhttp = "4.12.0"
 navigationCompose = "2.7.7"
-googleGmsPlugin = "4.4.2" # <-- NUEVA VERSIÓN AÑADIDA
-firebaseBom = "33.1.0" # <-- NUEVA VERSIÓN AÑADIDA
+googleGmsPlugin = "4.4.2"
+firebaseBom = "33.1.0"
+
+fragmentKtx = "1.7.1" # Versión moderna que soluciona el error de Lint
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -37,13 +40,13 @@ androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "l
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-lifecycle-viewmodel-savedstate = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "lifecycleRuntimeKtx" }
 
-# --- LIBRERÍAS DE FIREBASE AÑADIDAS ---
+
+androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
+
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
-
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-# --- PLUGIN DE GOOGLE SERVICES AÑADIDO ---
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsPlugin" }

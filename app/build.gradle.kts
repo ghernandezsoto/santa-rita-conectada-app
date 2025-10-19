@@ -2,7 +2,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    // --- PLUGIN DE GOOGLE SERVICES AÑADIDO (usa el alias de tu catálogo de versiones) ---
     alias(libs.plugins.google.gms.google.services)
 }
 
@@ -50,6 +49,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+
+    implementation(libs.androidx.fragment.ktx)
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
@@ -65,13 +67,8 @@ dependencies {
     implementation(libs.okhttp.logging.interceptor)
 
     // --- FIREBASE (BoM + KTX) ---
-    // Usamos el BoM para alinear versiones de Firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.1.1")) // versión recomendada; cámbiala si necesitas otra
-
-    // Analytics (opcional, recomendado para diagnóstico y métricas)
+    implementation(platform("com.google.firebase:firebase-bom:33.1.1"))
     implementation("com.google.firebase:firebase-analytics-ktx")
-
-    // Messaging KTX (¡esta es la línea clave!)
     implementation("com.google.firebase:firebase-messaging-ktx")
 
     // Tests
