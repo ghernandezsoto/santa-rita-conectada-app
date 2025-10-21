@@ -2,9 +2,15 @@ package cl.santaritaconectada.app.network
 
 import cl.santaritaconectada.app.network.request.FcmTokenRequest
 import cl.santaritaconectada.app.network.request.LoginRequest
+import cl.santaritaconectada.app.network.response.Acta
+import cl.santaritaconectada.app.network.response.ChartData
 import cl.santaritaconectada.app.network.response.Comunicado
+import cl.santaritaconectada.app.network.response.Documento
 import cl.santaritaconectada.app.network.response.Evento
 import cl.santaritaconectada.app.network.response.LoginResponse
+import cl.santaritaconectada.app.network.response.User
+import cl.santaritaconectada.app.ui.directivo.SummaryResponse
+import cl.santaritaconectada.app.ui.socio.AportesResponse
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -16,12 +22,11 @@ interface ApiService {
     @GET("api/user")
     fun getAuthenticatedUser(@Header("Authorization") token: String): Call<User>
 
-    // --- ENDPOINT NUEVO PARA REGISTRAR EL TOKEN DE NOTIFICACIONES ---
     @POST("api/fcm-token")
     fun registerFcmToken(
         @Header("Authorization") token: String,
         @Body fcmTokenRequest: FcmTokenRequest
-    ): Call<Unit> // Usamos Call<Unit> porque no esperamos una respuesta con datos
+    ): Call<Unit>
 
     @GET("api/comunicados")
     fun getComunicados(@Header("Authorization") token: String): Call<List<Comunicado>>
@@ -40,4 +45,22 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") eventoId: Int
     ): Call<Evento>
+
+    @GET("api/documentos")
+    suspend fun getDocumentos(@Header("Authorization") token: String): List<Documento>
+
+    @GET("api/actas")
+    suspend fun getActas(@Header("Authorization") token: String): List<Acta>
+
+    @GET("api/aportes")
+    suspend fun getAportes(@Header("Authorization") token: String): AportesResponse
+
+    @GET("api/charts/personal-finances")
+    suspend fun getPersonalChartData(@Header("Authorization") token: String): ChartData
+
+    @GET("api/directivo/summary")
+    suspend fun getDirectivoSummary(@Header("Authorization") token: String): SummaryResponse
+
+    @GET("api/charts/finances")
+    suspend fun getFinanceChart(@Header("Authorization") token: String): ChartData
 }

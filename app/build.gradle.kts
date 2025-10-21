@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "cl.santaritaconectada.app"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -49,8 +49,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-
+    implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.ymlCharts)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)

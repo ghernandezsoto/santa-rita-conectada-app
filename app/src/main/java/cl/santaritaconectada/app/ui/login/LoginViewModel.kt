@@ -6,10 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import cl.santaritaconectada.app.network.RetrofitInstance
-import cl.santaritaconectada.app.network.User
 import cl.santaritaconectada.app.network.request.FcmTokenRequest
 import cl.santaritaconectada.app.network.request.LoginRequest
 import cl.santaritaconectada.app.network.response.LoginResponse
+import cl.santaritaconectada.app.network.response.User // <-- IMPORTACIÓN CORREGIDA
 import com.google.firebase.messaging.FirebaseMessaging
 import retrofit2.Call
 import retrofit2.Callback
@@ -18,7 +18,7 @@ import retrofit2.Response
 sealed class LoginState {
     object Idle : LoginState()
     object Loading : LoginState()
-    data class Success(val user: User, val token: String) : LoginState()
+    data class Success(val user: User, val token: String) : LoginState() // <-- AHORA USA EL USER CORRECTO
     data class Error(val message: String) : LoginState()
 }
 
@@ -52,10 +52,10 @@ class LoginViewModel : ViewModel() {
 
     private fun fetchUserData(token: String) {
         val authToken = "Bearer $token"
+        // AHORA USA EL USER CORRECTO
         RetrofitInstance.api.getAuthenticatedUser(authToken).enqueue(object : Callback<User> {
             override fun onResponse(call: Call<User>, response: Response<User>) {
                 if (response.isSuccessful && response.body() != null) {
-                    // Si obtenemos el usuario, procedemos a registrar el token de FCM
                     registerDeviceToken(authToken)
                     loginState = LoginState.Success(response.body()!!, token)
                 } else {
@@ -68,7 +68,6 @@ class LoginViewModel : ViewModel() {
         })
     }
 
-    // --- FUNCIÓN NUEVA PARA ENVIAR EL TOKEN AL SERVIDOR ---
     private fun registerDeviceToken(authToken: String) {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {

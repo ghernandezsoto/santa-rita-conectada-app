@@ -11,10 +11,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import cl.santaritaconectada.app.ui.directivo.DirectivoHomeScreen
 import cl.santaritaconectada.app.ui.login.LoginScreen
 import cl.santaritaconectada.app.ui.login.LoginState
 import cl.santaritaconectada.app.ui.login.LoginViewModel
-import cl.santaritaconectada.app.ui.main.MainScreen
+import cl.santaritaconectada.app.ui.socio.SocioHomeScreen
 import cl.santaritaconectada.app.ui.theme.SantaRitaConectadaTheme
 import com.google.firebase.messaging.FirebaseMessaging
 
@@ -22,40 +23,31 @@ class MainActivity : ComponentActivity() {
 
     private val loginViewModel: LoginViewModel by viewModels()
 
-    // --- INICIO DEL CÓDIGO AÑADIDO ---
-
-    // 1. Creamos el lanzador para la solicitud de permisos
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (isGranted) {
             Log.d("MainActivity", "Permiso de notificaciones CONCEDIDO.")
-            getAndLogFcmToken() // Si nos dan permiso, obtenemos el token
+            getAndLogFcmToken()
         } else {
             Log.w("MainActivity", "Permiso de notificaciones DENEGADO.")
         }
     }
 
-    // 2. Creamos la función para pedir el permiso
     private fun askNotificationPermission() {
-        // Esta función solo se aplica para Android 13 (API 33) o superior
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
                 PackageManager.PERMISSION_GRANTED
             ) {
-                // Si ya tenemos el permiso, obtenemos el token
                 getAndLogFcmToken()
             } else {
-                // Si no, lanzamos la petición de permiso
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         } else {
-            // Para versiones de Android más antiguas, el permiso se concede al instalar
             getAndLogFcmToken()
         }
     }
 
-    // 3. Creamos la función para obtener y mostrar el token de Firebase
     private fun getAndLogFcmToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
@@ -63,17 +55,14 @@ class MainActivity : ComponentActivity() {
                 return@addOnCompleteListener
             }
             val token = task.result
-            // Este Log es el que buscaremos para verificar
             Log.d("FCM_TOKEN", "El token del dispositivo es: $token")
         }
     }
 
-    // --- FIN DEL CÓDIGO AÑADIDO ---
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        askNotificationPermission() // <-- Llamamos a la función para pedir permiso al iniciar
+        askNotificationPermission()
 
         enableEdgeToEdge()
         setContent {
@@ -82,16 +71,29 @@ class MainActivity : ComponentActivity() {
 
                 when (state) {
                     is LoginState.Success -> {
-                        MainScreen(
-                            user = state.user,
-                            token = state.token,
-                            onLogout = { loginViewModel.logout() }
-                        )
+                        val isSocio = state.user.roles.any { it.name == "Socio" }
+
+                        if (isSocio) {
+                            // --- SOCIO ---
+                            SocioHomeScreen(
+                                user = state.user,
+                                token = state.token, // Se pasa el token que faltaba
+                                onLogout = { loginViewModel.logout() }
+                            )
+                        } else {
+                            // --- DIRECTIVO ---
+                            DirectivoHomeScreen(
+                                user = state.user,
+                                token = state.token, // ✅ Corregido: se añadió token
+                                onLogout = { loginViewModel.logout() }
+                            )
+                        }
                     }
                     else -> {
                         LoginScreen(loginViewModel = loginViewModel)
                     }
                 }
+
             }
         }
     }
